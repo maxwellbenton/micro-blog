@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #blogPosts {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: start;
+      align-items: center;
+      align-content: center;
+    }
+
+    .blogPost {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      width: 20vw;
+      border: 1px solid black;
+      margin: 1vw;
+      padding: 0.5em;
+    }
+  </style>
+  <title>Blog</title>
+</head>
+<body>
+  <script>
+    (async () => {
+      const data = await fetch('https://raw.githubusercontent.com/maxwellbenton/micro-blog/main/blog.json')
+        .then(response => response.json())
+
+      /* a blog site that reads posts from a json object stored on github */
+      function landingPage() {
+        document.body.innerHTML = '';
+        var blog = document.createElement('div');
+        blog.innerHTML = '<h1>Blog</h1>';
+        document.body.appendChild(blog);
+        var blogPostsTitle = document.createElement('h3');
+        blogPostsTitle.innerHTML = 'Posts';
+        document.body.appendChild(blogPostsTitle);
+        var blogPosts = document.createElement('div');
+        blogPosts.id = 'blogPosts';
+        document.body.appendChild(blogPosts);
+
+        data.forEach(function(v, i, a) {
+          var blogPost = document.createElement('div');
+          blogPost.className = 'blogPost';
+          blogPost.innerHTML = '<h2>' + v.title + '</h2><p>' + v.content.slice(0,70) + '...' + '</p>';
+          blogPosts.prepend(blogPost);
+          blogPost.addEventListener('click', function() {
+            blogPosts.innerHTML = '';
+            var blogPost = document.createElement('div');
+            blogPost.innerHTML = '<h2>' + v.title + '</h2><p>' + v.content + '</p>';
+            blogPosts.appendChild(blogPost);
+          })
+        });
+
+        blog.addEventListener('click', function() {
+          landingPage();
+        })
+      }
+
+      landingPage();
+
+    })()
+  </script>
+</body>
+</html>
